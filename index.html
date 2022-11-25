@@ -1,0 +1,695 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Catallaxy Services | Implementing Multivariate Anomaly Detection in Python</title>
+
+		<link rel="stylesheet" href="../reveal.js/dist/reset.css">
+		<link rel="stylesheet" href="../reveal.js/dist/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/dist/theme/black.css" id="theme">
+		<link rel="stylesheet" href="../WebsiteAssets/mods.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../reveal.js/plugin/highlight/monokai.css" id="highlight-theme">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h2>Implementing Multivariate Anomaly Detection in Python</h2>
+					
+					<a href="https://www.catallaxyservices.com">Kevin Feasel</a> (<a href="https://twitter.com/feaselkl">@feaselkl</a>)<br />
+					<a href="https://csmore.info/on/multiad">https://csmore.info/on/multiad</a>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Who Am I?  What Am I Doing Here?</h3>
+					<div class="container">
+						<div class="col">
+							<table class="whoami">
+								<tr>
+									<td><a href="https://csmore.info"><img src="../WebsiteAssets/Logo.png" height="100" /></a></td>
+									<td nowrap><a href="https://csmore.info">Catallaxy Services</a></td>
+								</tr>
+								<tr>
+									<td><a href="https://curatedsql.com"><img src="../WebsiteAssets/CuratedSQLLogo.png" height="100" /></a></td>
+									<td nowrap><a href="https://curatedsql.com">Curated SQL</a></td>
+								</tr>
+								<tr>
+									<td><a href="https://link.springer.com/book/10.1007/978-1-4842-8870-2"><img src="../WebsiteAssets/Finding-Ghosts.jpg" height="120" /></a></td>
+									<td nowrap><a href="https://link.springer.com/book/10.1007/978-1-4842-8870-2">Finding Ghosts in Your Data</a></td>
+								</tr>
+							</table>
+						</div>
+						<div class="col">
+							<a href="http://www.twitter.com/feaselkl"><img src="../WebsiteAssets/HeadShot.jpg" height="358" width="315" /></a>
+							<br />
+							<a href="http://www.twitter.com/feaselkl">@feaselkl</a>
+						</div>					
+					</div>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Finding Ghosts in Your Data</h3>
+					
+					<div class="container">
+						<div class="col">
+							<a href="https://link.springer.com/book/10.1007/978-1-4842-8870-2"><img src="../WebsiteAssets/Finding-Ghosts.jpg" height="480" /></a>
+						</div>
+						<div class="col">
+							<ul>
+								<li>Anomaly and outlier detection for developers</li>
+								<li>Includes detailed algorithmic discussions and practical implementations</li>
+								<li>Will summarize several chapters</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Agenda</h3>
+					
+					<ol>
+						<li class="active">Anomalies and Outliers</li>
+						<li>Univariate Outlier Detection</li>
+						<li>Multivariate Outlier Detection</li>
+						<li>Building a Detector</li>
+						<li>LOF</li>
+						<li>COF</li>
+						<li>LOCI</li>
+						<li>COPOD</li>
+					</ol>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/mismatch.jpg" data-background-opacity="0.2">
+					<h3>Outliers and Anomalies</h3>
+
+					<p>In the academic literature, there is some ambiguity in the definitions of <strong>outliers</strong> and <strong>anomalies</strong>.  Some authors mean them to be the same and other authors differentiate the two terms.  I will follow the latter practice.</p>
+
+					<p>An <strong>outlier</strong> is something sufficiently different from the norm that we notice it.</p>
+
+					<p>An <strong>anomaly</strong> is an outlier of interest to humans.</p>
+					
+					<p>Let's dive further into general concepts and technical definitions.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>General Concepts</h3>
+					
+					<div class="container">
+						<div class="col">
+							<p>The non-technical definition of an anomaly is essentially “I’ll know it when I see it.”  This can get muddled at the edges, but works really well because humans are great at pattern matching and picking out things which look dissimilar.</p>
+						</div>
+						<div class="col">
+							<img src="presentation/assets/image/outlier.jpg" height="450" />
+						</div>					
+					</div>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/dictionary.jpg" data-background-opacity="0.2">
+					<h3>Technical Definitions</h3>
+					
+					<p>A layman’s concept of anomalies is great, but it is ambiguous.  Some things which might look strange actually aren’t anomalous behavior, whereas some anomalies might look reasonable from a first glance.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Anomalies on a Fitted Distribution</h3>
+					
+					<img src="presentation/assets/image/AnomaliesOnDistribution.png" height="550" />
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Anomalies on a Box Plot</h3>
+					
+					<img src="presentation/assets/image/BoxPlot.png" height="450" />
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Anomalies on a Process Control Chart</h3>
+					
+					<div class="container">
+						<div class="col">
+							<p>A process control chart gives us an understanding of when a process is working within normal parameter ("in control") and when it escapes those confines and goes "out of control."</p>
+						</div>
+						<div class="col">
+							<img src="presentation/assets/image/ProcessControlChart.png" height="450" />
+						</div>					
+					</div>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Does This Look Weird to You?</h3>
+					
+					<p>For an in-depth look at the topic of outliers, check out <a href="https://csmore.info/on/anomalies">https://csmore.info/on/anomalies</a> for a full-length introduction to outlier detection.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Agenda</h3>
+					
+					<ol>
+						<li>Anomalies and Outliers</li>
+						<li class="active">Univariate Outlier Detection</li>
+						<li>Multivariate Outlier Detection</li>
+						<li>Building a Detector</li>
+						<li>LOF</li>
+						<li>COF</li>
+						<li>LOCI</li>
+						<li>COPOD</li>
+					</ol>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/coins-stacked.jpg" data-background-opacity="0.2">
+					<h3>Univariate Outlier Detection</h3>
+
+					<p>Univariate = One variable</p>
+					
+					<p>We have a thing whose behavior we want to understand and the only thing we have available is a stream of data points.  This stream may or may not be part of a time series--if so, that is known as <strong>univariate time series analysis</strong>.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>How This Applies</h3>
+					
+					<div class="container">
+						<div class="col">
+							<p>The key variable on our process control chart is what we want to monitor.</p>
+						</div>
+						<div class="col">
+							<img src="presentation/assets/image/ProcessControlChart.png" height="450" />
+						</div>					
+					</div>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/calculator.jpg" data-background-opacity="0.2">
+					<h3>Univariate Techniques</h3>
+
+					<p>A variety of techniques are available for univariate outlier detection.  Most of these techniques incorporate an analysis of the <strong>distribution</strong> of the data:  how frequently we see certain values, as well as how close a given value is to others.</p>
+					
+					<p>Returning to our original technical definitions:</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Anomalies on a Fitted Distribution</h3>
+					
+					<img src="presentation/assets/image/AnomaliesOnDistribution.png" height="550" />
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Anomalies on a Box Plot</h3>
+					
+					<img src="presentation/assets/image/BoxPlot.png" height="450" />
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Anomalies on a Process Control Chart</h3>
+					
+					<div class="container">
+						<div class="col">
+							<p>Use a known "normal" configuration and perform statistical analysis to estimate when something is far enough outside the norm.</p>
+						</div>
+						<div class="col">
+							<img src="presentation/assets/image/ProcessControlChart.png" height="450" />
+						</div>					
+					</div>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Agenda</h3>
+					
+					<ol>
+						<li>Anomalies and Outliers</li>
+						<li>Univariate Outlier Detection</li>
+						<li class="active">Multivariate Outlier Detection</li>
+						<li>Building a Detector</li>
+						<li>LOF</li>
+						<li>COF</li>
+						<li>LOCI</li>
+						<li>COPOD</li>
+					</ol>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/colored-pencils.jpg" data-background-opacity="0.2">
+					<h3>Multivariate Outlier Detection</h3>
+
+					<p>Fundamentally, multivariate outlier detection is an extension of univariate outlier detection.  We still want to find points which are different from the norm.</p>
+					
+					<p>A key difference is that distributions tend to be much more complex as different variables correlate to one another.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>How This Applies</h3>
+					
+					<div class="container">
+						<div class="col">
+							<p>Here, we have two variables which we expect to correlate fairly well.</p>
+						</div>
+						<div class="col">
+							<img src="presentation/assets/image/PointsScored.png" height="450" />
+						</div>					
+					</div>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>How This Applies</h3>
+					
+					<div class="container">
+						<div class="col">
+							<p>If we expect correlation, we can regress one against the other and look for points well off of a given line.</p>
+						</div>
+						<div class="col">
+							<img src="presentation/assets/image/PointsScoredLine.png" height="450" />
+						</div>					
+					</div>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/data.jpg" data-background-opacity="0.2">
+					<h3>Non-Numeric Inputs</h3>
+
+					<p>Univariate outlier detection almost always focuses around numeric data.  With multivariate outlier detection, we still emphasize numeric variables but might also have non-numeric variables.  The problem is that all of our techniques expect numeric inputs, not strings or other non-numeric types.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/robot.jpg" data-background-opacity="0.2">
+					<h3>Non-Numeric Inputs</h3>
+					
+					<p>There are a few ways to deal with this problem:</p>
+					
+					<ul>
+						<li>Ordinal encoding</li>
+						<li>One-hot encoding</li>
+						<li>"Bag of words" or word2vec word translation</li>
+						<li>Semantic models to transform words and phrases to numeric values</li>
+					</ul>
+					
+					<p>For simplicity, we will use simple ordinal encoding.  For more complicated scenarios, this is a job for Natural Language Processing.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/cluster.jpg" data-background-opacity="0.2">
+					<h3>From Distributions to Clusters</h3>
+
+					<p>Typically, however, we don't expect such close correlation in variables and instead want to analyze clusters of data.</p>
+					
+					<p>Intuitively, outliers are points which are sufficiently "far" from other points (or the majority of points)--if there were a lot of points clustered closely together, they'd be inliers!</p>
+					
+					<p>In practice, we have techniques which help us formalize this intuition.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Agenda</h3>
+					
+					<ol>
+						<li>Anomalies and Outliers</li>
+						<li>Univariate Outlier Detection</li>
+						<li>Multivariate Outlier Detection</li>
+						<li class="active">Building a Detector</li>
+						<li>LOF</li>
+						<li>COF</li>
+						<li>LOCI</li>
+						<li>COPOD</li>
+					</ol>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/documents.jpg" data-background-opacity="0.2">
+					<h3>Building a Detector -- The Architecture</h3>
+
+					<ul>
+						<li>Language:  Python</li>
+						<li>"Real-time" detection microservice based on API calls</li>
+						<li>Use FastAPI for handling API calls</li>
+						<li>Use pytest to perform unit testing</li>
+						<li>Use Postman to perform integration testing</li>
+						<li>Use Streamlit to visualize results</li>
+					</ul>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/demo.jpg" data-background-opacity="0.2">
+					<h3>Demo Time</h3>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Agenda</h3>
+					
+					<ol>
+						<li>Anomalies and Outliers</li>
+						<li>Univariate Outlier Detection</li>
+						<li>Multivariate Outlier Detection</li>
+						<li>Building a Detector</li>
+						<li class="active">LOF</li>
+						<li>COF</li>
+						<li>LOCI</li>
+						<li>COPOD</li>
+					</ol>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Distance as an Indicator</h3>
+					
+					<div class="container">
+						<div class="col">
+							<p>Distance is a great indicator of whether a point is an outlier.</p>
+						</div>
+						<div class="col">
+							<img src="presentation/assets/image/AnomaliesOnDistribution.png" height="450" />
+						</div>					
+					</div>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Distance or Density?</h3>
+
+					<div class="container">
+						<div class="col">
+							<p>But it isn't the only one.  In this case, A is further from the middle than B, but A is clearly part of a cluster whereas B is outside its own cluster.</p>
+						</div>
+						<div class="col">
+							<img src="presentation/assets/image/DistanceComp.png" height="200" />
+						</div>					
+					</div>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Density and Transitivity</h3>
+					
+					<p>Typically, we calculate density as distance to the k nearest neighbors.  As a quick note, these values are NOT transitive!  The two nearest neighbors of the black dot do not include the black dot in their two nearest neighbors.</p>
+					
+					<img src="presentation/assets/image/Neighbor%20Density.jpg" height="125" />
+				</section>
+				
+				<section data-background-image="presentation/assets/background/traffic.jpg" data-background-opacity="0.2">
+					<h3>Local Outlier Factor</h3>
+
+					<p>Local Outlier Factor (LOF) is a density-based approach to finding outliers in a dataset.</p>
+					
+					<p>We want to measure the local density of any given data point and see how it compares to its k nearest neighbors.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Local Outlier Factor</h3>
+					
+					<img src="presentation/assets/image/LOF%20Reachability.jpg" height="325" />
+					
+					<p>The <strong>neighborhood size</strong> (k) here is 5.  We find the distance to the kth point and all points inside that zone have the same <strong>reachability distance</strong>.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Local Outlier Factor</h3>
+					
+					<img src="presentation/assets/image/LOF%20Reachability.jpg" height="325" />
+					
+					<p>For any point outside that neighborhood, we calculate the distance from x to that point (e.g., b).</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Local Outlier Factor</h3>
+					
+					<img src="presentation/assets/image/LOF%20Reachability.jpg" height="325" />
+					
+					<p>The <strong>reachability density</strong> is the reciprocal of the average reachability distance.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Local Outlier Factor</h3>
+					
+					<p>Finally, the <strong>Local Outlier Factor</strong> is the ratio of local reachability densities of all other data points versus x.  The higher the value, the more likely this is an outlier.</p>
+					
+					<p>There is no exact value of "What value indicates an outlier?"  Instead, we often track the top few percent (e.g., top 5%) and report those as outliers.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Agenda</h3>
+					
+					<ol>
+						<li>Anomalies and Outliers</li>
+						<li>Univariate Outlier Detection</li>
+						<li>Multivariate Outlier Detection</li>
+						<li>Building a Detector</li>
+						<li>LOF</li>
+						<li class="active">COF</li>
+						<li>LOCI</li>
+						<li>COPOD</li>
+					</ol>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>The Problem with Local Outlier Factor</h3>
+					
+					<p>LOF sounds great but breaks down when densities change.  The black dot is an obvious outlier but the cutoff point for it also marks all the points in the circle as outliers, even though they aren't!</p>
+					
+					<img src="presentation/assets/image/LOF%20Failure.png" height="325" />
+				</section>
+				
+				<section data-background-image="presentation/assets/background/isolation.jpg" data-background-opacity="0.2">
+					<h3>COF</h3>
+					
+					<p>Connectivity-Based Outlier Factor (COF) is an attempt to deal with the relative density problems in LOF.</p>
+					
+					<p>To do so, it adds <strong>isolativity</strong> in addition to density, where isolativity is the degree to which an object is connected to other objects.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Calculating Isolativity</h3>
+					
+					<p>First, build a chain of length k, linking the current chain to to the next-nearest neighbor.  Here, k = 6, covering a total of 7 nodes.</p>
+					
+					<img src="presentation/assets/image/COF%20Outlier.png" height="325" />
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Calculating Isolativity</h3>
+					
+					<img src="presentation/assets/image/COF%20Outlier.png" height="325" />
+					
+					<p>Then, perform a weighted calculation which emphasizes the lower-numbered links more than the higher-numbered links.  This gives us the COF value.  Points with higher COF values are more likely to be outliers.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Implementing COF:  PyOD</h3>
+					
+					<p>The <code>PyOD</code> library has an implementation of COF we can use.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/demo.jpg" data-background-opacity="0.2">
+					<h3>Demo Time</h3>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Agenda</h3>
+					
+					<ol>
+						<li>Anomalies and Outliers</li>
+						<li>Univariate Outlier Detection</li>
+						<li>Multivariate Outlier Detection</li>
+						<li>Building a Detector</li>
+						<li>LOF</li>
+						<li>COF</li>
+						<li class="active">LOCI</li>
+						<li>COPOD</li>
+					</ol>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/monkey-thinking.jpg" data-background-opacity="0.2">
+					<h3>The Problem with COF</h3>
+					
+					<p>COF is definitely better than LOF and is a useful part of an ensemble.  The problem is that COF does not provide specific guidance on what is an outlier.</p>
+					
+					<p>The closest we have is an ordered list (letting us choose the top X% by score) and the ability to create our own cutoff.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/measuring-tools.jpg" data-background-opacity="0.2">
+					<h3>Local Correlation Integral</h3>
+					
+					<p>Local Correlation Integral (LOCI) is intended to solve this problem by creating an automated cut-off to determine whether a given point is an outlier.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/city-at-night.jpg" data-background-opacity="0.2">
+					<h3>Won't You Be My Neighbor?</h3>
+					
+					<p>LOCI does not ask for k nearest neighbors.  It instead asks for a <strong>neighborhood size</strong> <code>alpha</code>, representing a max distance between neighbors for our calculation.</p>
+					
+					<p><code>0 &lt; alpha &lt; 1</code> and the typical default is <code>alpha = 0.5</code>.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Sampling Neighborhood</h3>
+					
+					<p>The <strong>sampling neighborhood</strong> <code>r</code> around a point <code>p1</code> represents all the points to which we will compare <code>p1</code> for normality.</p>
+					
+					<img src="presentation/assets/image/SamplingNeighborhood.png" height="325" />
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Counting Neighborhood</h3>
+					
+					<p>The <strong>counting neighborhood</strong> <code>alpha * r</code> around a point <code>p1</code> represents how closely packed the points around <code>p1</code> are.</p>
+					
+					<img src="presentation/assets/image/SamplingNeighborhood.png" height="325" />
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Performing the Count</h3>
+					
+					<img src="presentation/assets/image/CountingNeighborhood.png" height="325" />
+					
+					<p>In this case, <code>p1</code>'s counting neighborhood size is 1.  <code>p2</code>'s size is 3 and <code>p3</code>'s size is 5.  <code>p2</code> and <code>p3</code> are in <code>p1</code>'s sampling neighborhood so will be the two direct comps, so the mean of <code>alpha*r</code> neighbors is 3.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/math.jpg" data-background-opacity="0.2">
+					<h3>Doing the Math</h3>
+					
+					<p>The formula for <strong>Multi-Granularity Deviation Factor (MDEF)</strong> is <code>1 - (my counting neighborhood size)/(average counting neighborhood size for my sampling neighborhood)</code>.</p>
+					
+					<p>For <code>p1</code>, that is <code>1 - (1 / 3) = 2/3</code>.</p>
+
+					<p>For <code>p2</code>, that is <code>1 - (3 / 3) = 0</code>.</p>
+					
+					<p>For <code>p3</code>, that is <code>1 - (5 / 3) = -2/3</code>.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/calculator.jpg" data-background-opacity="0.2">
+					<h3>Doing the Math</h3>
+					
+					<p>We also want to calculate the standard deviation of MDEF, which is calculated as <code>(standard deviation of counting neighborhood sizes in my sampling neighborhood)/(average counting neighborhood size for my sampling neighborhood)</code>.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/checklist.jpg" data-background-opacity="0.2">
+					<h3>Doing the Math</h3>
+					
+					<p>This gets us to our final parameter:  <code>k</code>, representing the number of standard deviations from MDEF before we declare an outlier.  By convention, this is 3.</p>
+					
+					<p>If the set of neighborhood sizes follows a normal distribution, fewer than 1% of data points will trigger when <code>k = 3</code>.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Implementing LOCI:  PyOD</h3>
+					
+					<p>The <code>PyOD</code> library has an implementation of LOCI we can use.</p>
+					
+					<p>It is, however, very slow.  Therefore, we will only use this when the data set is sufficiently small (e.g., less than 1000 data points).</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/demo.jpg" data-background-opacity="0.2">
+					<h3>Demo Time</h3>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Agenda</h3>
+					
+					<ol>
+						<li>Anomalies and Outliers</li>
+						<li>Univariate Outlier Detection</li>
+						<li>Multivariate Outlier Detection</li>
+						<li>Building a Detector</li>
+						<li>LOF</li>
+						<li>COF</li>
+						<li>LOCI</li>
+						<li class="active">COPOD</li>
+					</ol>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/books-sale.jpg" data-background-opacity="0.2">
+					<h3>More than Clusters</h3>
+					
+					<p>LOF, COF, and LOCI are all clustering-based approaches to outlier detection:  we look for points sufficiently distant from other points as outliers.</p>
+					
+					<p>Another technique is to use copulas.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/chain.jpg" data-background-opacity="0.35">
+					<h3>What is a Copula?</h3>
+					
+					<p>A <strong>copula</strong> is a link.  In language, copulas are links between subject and predicate, such as the helper verb "to be."</p>
+					
+					<p>In statistics, a copula is "a probability model that represents a multivariate uniform distribution, which examines the association or dependence between many variables" (Kenton).</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/problem.jpg" data-background-opacity="0.2">
+					<h3>Okay, but What is a Copula?</h3>
+					
+					<p>Imagine a multivariate dataset.  Each variable in the dataset may follow its own probability distribution.</p>
+					
+					<p>In addition, variables may be correlated.  In other words, there is a <strong>joint probability distribution</strong> between some set of variables in our dataset.</p>
+					
+					<p>How do we model the joint probability distribution of any combination of these variables?</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/connections.jpg" data-background-opacity="0.2">
+					<h3>Copulas!</h3>
+					
+					<p>We transform a joint probability distribution into several <strong>marginal distributions</strong> (aka <strong>marginals</strong>).  These marginals are all independent and therefore not correlated with other variables.</p>
+					
+					<p>A <strong>copula</strong> is a function which transforms a single joint distribution to multiple marginal distributions.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Implementing COPOD:  PyOD</h3>
+					
+					<p>The <code>PyOD</code> library also has an implementation of COPOD we can use.</p>
+					
+					<p>One important consideration here is that the scale of COPOD differs significantly from COF and LOCI.  Furthermore, it changes based on the median of the dataset.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/background/demo.jpg" data-background-opacity="0.2">
+					<h3>Demo Time</h3>
+				</section>				
+
+				<section data-background-image="presentation/assets/background/skeleton-thinking.jpg" data-background-opacity="0.2">
+					<h3>From Outlier to Anomaly</h3>
+					
+					<p>The last step in the process is for a human to understand whether any given outlier is actually an anomaly and act upon it.  We have built an outlier detection engine but people turn it into an anomaly detector.</p>
+					
+					<p>As a bonus, if you allow people to mark outliers as anomalous or not, you can use that data to train a future model, possibly one which is considerably better than what a general-purpose outlier detection engine will give you.</p>
+				</section>
+				
+				<section data-background-image="presentation/assets/image/Bubbles.jpg" data-background-opacity="0.4">
+					<h3>Wrapping Up</h3>
+					
+					<p>
+						To learn more, go here:
+						<br />
+						<a href="https://csmore.info/on/multiad">https://csmore.info/on/multiad</a>
+					</p>
+					<br />
+					<p>
+						And for help, contact me:
+						<br />
+						<a href="mailto:feasel@catallaxyservices.com">feasel@catallaxyservices.com</a> | <a href="https://www.twitter.com/feaselkl">@feaselkl</a>
+					</p>
+					<br />
+					<p>
+						Catallaxy Services consulting:
+						<br />
+						<a href="https://csmore.info/contact">https://CSmore.info/on/contact</a>
+					</p>
+				</section>
+			</div>
+		</div>
+
+		<script src="../reveal.js/dist/reveal.js"></script>
+		<script src="../reveal.js/plugin/zoom/zoom.js"></script>
+		<script src="../reveal.js/plugin/notes/notes.js"></script>
+		<script src="../reveal.js/plugin/search/search.js"></script>
+		<script src="../reveal.js/plugin/markdown/markdown.js"></script>
+		<script src="../reveal.js/plugin/math/math.js"></script>
+		<script src="../reveal.js/plugin/menu/menu.js"></script>
+		<script src="../reveal.js/plugin/highlight/highlight.js"></script>
+		<script src="../reveal.js/plugin/chart/Chart.min.js"></script>
+		<script src="../reveal.js/plugin/chart/plugin.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				width: '70%',
+				controls: true,
+				progress: true,
+				center: true,
+				hash: true,
+				transition: 'fade',
+				
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight, RevealMath, RevealMenu, RevealChart ]
+			});
+		</script>
+	</body>
+</html>
