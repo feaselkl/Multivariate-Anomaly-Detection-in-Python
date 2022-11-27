@@ -1,0 +1,1525 @@
+{
+	"info": {
+		"_postman_id": "55ae79ad-ca9f-40c0-afba-dccb590de1dd",
+		"name": "Multivariate Anomaly Detection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8748848"
+	},
+	"item": [
+		{
+			"name": "01 - COF",
+			"item": [
+				{
+					"name": "Debug - No Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 0)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(0);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 17.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 17.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NoDebug - No Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is not enabled (debug_details does not exist).\", function () { pm.expect(body[\"debug_details\"]).undefined; });\r",
+									"pm.test(\"Count of anomalies is correct (eq 0)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(0);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 17.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 17.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=false&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "false"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - SHOULD BE One Outlier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 1)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(1);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 17.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Two Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 2)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(2);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 27.69, 28.10, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Small and Large Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 2)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(2);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 22.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=75&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "75"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Small and Large Outliers Low Sensitivity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 2)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(2);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 22.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=5&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "5"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - SHOULD BE Three Outliers, 2S1L - Two Recorded",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 3)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(3);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 22.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 9.15, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=82&max_fraction_anomalies=0.3&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "82"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.3"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.collectionVariables.set(\"TestNumber\", \"1\");"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "02 - COF and LOCI",
+			"item": [
+				{
+					"name": "Debug - No Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 0)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(0);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 17.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 17.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NoDebug - No Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is not enabled (debug_details does not exist).\", function () { pm.expect(body[\"debug_details\"]).undefined; });\r",
+									"pm.test(\"Count of anomalies is correct (eq 0)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(0);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 17.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 17.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=false&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "false"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - One Outlier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 1)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(1);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 17.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Two Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 2)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(2);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 27.69, 28.10, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Small and Large Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 2)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(2);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 22.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=75&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "75"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Small and Large Outliers Low Sensitivity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 2)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(2);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 22.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=5&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "5"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - SHOULD BE Three Outliers, 2S1L - Two Recorded",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 3)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(3);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 22.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 9.15, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=82&max_fraction_anomalies=0.3&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "82"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.3"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.collectionVariables.set(\"TestNumber\", \"2\");"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "03 - COF, LOCI, COPOD",
+			"item": [
+				{
+					"name": "Debug - No Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 0)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(0);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 17.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 17.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NoDebug - No Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is not enabled (debug_details does not exist).\", function () { pm.expect(body[\"debug_details\"]).undefined; });\r",
+									"pm.test(\"Count of anomalies is correct (eq 0)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(0);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 17.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 17.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=false&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "false"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - One Outlier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 1)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(1);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 17.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Two Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 2)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(2);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 27.69, 28.10, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=60&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "60"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Small and Large Outliers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 2)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(2);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 22.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=75&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "75"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Small and Large Outliers Low Sensitivity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"pm.test(\"Count of anomalies is correct (eq 2)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(2);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 22.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 8.04, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=5&max_fraction_anomalies=0.15&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "5"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.15"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Debug - Three Outliers, 2S1L - CORRECT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200: \" + pm.response.code, function () { pm.expect(pm.response.code).to.eql(200); });\r",
+									"pm.test(\"Response time is acceptable (range 5ms to 7000ms): \" + pm.response.responseTime + \"ms\", function () { pm.expect(_.inRange(pm.response.responseTime, 5, 7000)).to.eql(true); });\r",
+									"var body = JSON.parse(responseBody);\r",
+									"pm.test(\"Number of items returned is correct (eq 15): \" + body[\"anomalies\"].length, function () { pm.expect(body[\"anomalies\"].length).to.eql(15); });\r",
+									"pm.test(\"Debugging is enabled (debug_details exists):  \" + body[\"debug_details\"], function () { pm.expect(body[\"debug_details\"].exist); });\r",
+									"// Was 2 in the first two tests\r",
+									"pm.test(\"Count of anomalies is correct (eq 3)\", () => {\r",
+									"    let anomalies = body[\"anomalies\"].filter(a => a.is_anomaly === true);\r",
+									"    pm.expect(anomalies.length).to.eql(3);\r",
+									"} );"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":1,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":2,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":3,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":4,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":5,\"vals\":[22.896, 17.69, 8.04, 14.11]},\r\n{\"key\":6,\"vals\":[22.9, 22.69, 8.04, 14.11]},\r\n{\"key\":7,\"vals\":[22.06, 17.69, 8.04, 14.11]},\r\n{\"key\":8,\"vals\":[22.16, 17.69, 9.15, 14.11]},\r\n{\"key\":9,\"vals\":[22.26, 17.69, 8.04, 14.11]},\r\n{\"key\":10,\"vals\":[22.36, 178.69, 8.04, 14.11]},\r\n{\"key\":11,\"vals\":[22.46, 17.69, 8.04, 14.11]},\r\n{\"key\":12,\"vals\":[22.56, 17.69, 8.04, 14.11]},\r\n{\"key\":13,\"vals\":[22.66, 17.69, 8.04, 14.11]},\r\n{\"key\":14,\"vals\":[22.76, 17.69, 8.04, 14.11]},\r\n{\"key\":15,\"vals\":[22.86, 17.69, 8.04, 14.11]}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{PortNumber}}/detect/multivariate/{{TestNumber}}?debug=true&sensitivity_score=82&max_fraction_anomalies=0.3&n_neighbors=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{PortNumber}}",
+							"path": [
+								"detect",
+								"multivariate",
+								"{{TestNumber}}"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": "true"
+								},
+								{
+									"key": "sensitivity_score",
+									"value": "82"
+								},
+								{
+									"key": "max_fraction_anomalies",
+									"value": "0.3"
+								},
+								{
+									"key": "n_neighbors",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.collectionVariables.set(\"TestNumber\", \"3\");"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "PortNumber",
+			"value": "80",
+			"type": "string"
+		},
+		{
+			"key": "TestNumber",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}

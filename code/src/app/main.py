@@ -1,4 +1,3 @@
-# Finding Ghosts in Your Data
 from typing import List
 from fastapi import FastAPI
 from pydantic import BaseModel
