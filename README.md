@@ -26,6 +26,12 @@ Then, kick off the API process with the following command from the `code\src\` f
 uvicorn app.main:app --host 0.0.0.0 --port 80
 ```
 
+Note that you may need to run the following command instead:
+
+```python
+python -m uvicorn app.main:app --host 0.0.0.0 --port 80
+```
+
 If you want to use a Docker-based solution, you should not need to modify the `Dockerfile` at all.  If you are proficient with Docker, you may also wish to build one image based on the completed code and tag it separately:
 
 ```python
@@ -64,4 +70,10 @@ The Streamlit dashboard is located in `\code\src\web\` and you can kick it off b
 
 ```python
 streamlit run site.py
+```
+
+Note that you may need to run the following command instead:
+
+```python
+python -m streamlit run site.py
 ```
