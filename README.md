@@ -38,13 +38,19 @@ If you want to use a Docker-based solution, you should not need to modify the `D
 docker build -t anomalydetector_complete .
 ```
 
-Then, when building your own version of the detector, tag it as mentioned in the book:
+Then, when building your own version of the detector, tag it like so:
 
 ```python
 docker build -t anomalydetector .
 ```
 
-This will allow you to compare how your service behaves compared to the version in the book.
+This will allow you to compare how your service behaves compared to the final version.
+
+You can kick off the container by running the following command:
+
+```bash
+docker run --name anomalydetector -p 80:80 anomalydetector
+```
 
 ## Running Tests
 
