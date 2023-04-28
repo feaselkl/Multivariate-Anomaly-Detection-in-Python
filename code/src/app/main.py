@@ -27,7 +27,6 @@ def post_multivariate1(
     debug: bool = False
 ):
     df = pd.DataFrame(i.__dict__ for i in input_data)
-    
     (df, weights, details) = multivariate1.detect_multivariate_statistical(df, sensitivity_score, max_fraction_anomalies, n_neighbors)
     
     results = { "anomalies": json.loads(df.to_json(orient='records')) }

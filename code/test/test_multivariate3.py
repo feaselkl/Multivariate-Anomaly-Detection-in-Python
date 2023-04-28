@@ -3,25 +3,6 @@ from src.app.models.multivariate3 import *
 import pandas as pd
 import pytest
 
-# Test encoding
-@pytest.mark.parametrize("df_input, requires_encoding, number_of_string_columns", [
-    ([["s1", [1, 30.1, 2, -1, 3]], ["s2", [4, 19.6, 5, -2, 6]], ["s3", [7, 17.3, 8, -3, 9]]], False, 0),
-    ([["s1a", [1, "Bob", 2, "Janice", 3]], ["s2", [4, "Jim", 5, "Alice", 6]], ["s3", [7, "Teddy", 8, "Mercedes", 9]]], True, 2),
-    ([["s1b", [1, 30.1, 2, "Janice", 3]], ["s2", [4, 19.6, 5, "Alice", 6]], ["s3", [7, 17.3, 8, "Mercedes", 9]]], True, 1),
-    ([["s1c", [1, 30.1, 2, -1, 3]], ["s2", [4, 19.6, 5, -2, 6]], ["s3", [7, 17.3, 8, -3, 9]]], False, 0),
-    ([["s1d", [1, 30.1, 2, "-1", 3]], ["s2", [4, 19.6, 5, "-2", 6]], ["s3", [7, 17.3, 8, "Mercedes", 9]]], True, 1),
-])
-def test_detect_multivariate_encoding_string_columns(df_input, requires_encoding, number_of_string_columns):
-    # Arrange
-    df = pd.DataFrame(df_input, columns=["key", "vals"])
-    # Act
-    (df_encoded, diagnostics) = encode_string_data(df)
-    encoding_performed = (diagnostics["Encoding Operation"] == "Encoding performed on string columns.")
-    num_string_columns = diagnostics["Number of string columns in input"]
-    # Assert
-    assert(requires_encoding == encoding_performed)
-    assert(number_of_string_columns == num_string_columns)
-
 sample_input = [["1604", [87,16,6184.90844,0.771,11.72]],
 ["91849", [7921,12,6337.69829,0.919,11.55]],
 ["55194", [4497,5,5639.15773,0.678,4.71]],

@@ -5,7 +5,6 @@ from pyod.models.cof import COF
 from pyod.models.loci import LOCI
 from pyod.models.combination import aom, moa, average, median, maximization, majority_vote
 from pyod.utils.data import evaluate_print
-from sklearn.preprocessing import OrdinalEncoder
 
 def detect_multivariate_statistical(
     df,
@@ -39,38 +38,14 @@ def detect_multivariate_statistical(
         # where we look at an incomplete range.
         if num_data_points < 16:
             n_neighbors = min(n_neighbors, 5)
-        (df_encoded, diagnostics) = encode_string_data(df)
-        (df_tested, tests_run, diagnostics) = run_tests(df_encoded, max_fraction_anomalies, n_neighbors)
+        # df comes in with two columns:  key and vals.
+        # We want to break out the list in vals and turn it into a set of columns.
+        # Column names don't matter here.
+        df_split = pd.DataFrame([pd.Series(x) for x in df.vals])
+        df = pd.concat([df, df_split], axis=1)
+        (df_tested, tests_run, diagnostics) = run_tests(df, max_fraction_anomalies, n_neighbors)
         (df_out, diag_outliers) = determine_outliers(df_tested, tests_run, sensitivity_factors, sensitivity_score, max_fraction_anomalies)
         return (df_out, weights, { "message": "Result of multivariate statistical tests.", "Tests run": tests_run, "Test diagnostics": diagnostics, "Outlier determination": diag_outliers})
-
-def encode_string_data(df):
-    # df comes in with two columns:  key and vals.
-    # We want to break out the list in vals and turn it into a set of columns.
-    # Column names don't matter here.
-    df2 = pd.DataFrame([pd.Series(x) for x in df.vals])
-    string_cols = df2.select_dtypes(include=[object]).columns.values
-    diagnostics = { "Number of string columns in input": len(string_cols) }
-    if (len(string_cols) > 0):
-        diagnostics["Encoding Operation"] = "Encoding performed on string columns."
-        # If there are any string columns in our list, convert them to ordinals.
-        # CRITICAL NOTE:  this is not a great practice!  We don't have a mechanism (here)
-        # to determine string nearness, so "cat" might get a value of 1.0 and "cats" may be 900.0.
-        # Our outlier detection engine really depends on numeric inputs, though, so the options
-        # are to avoid encoding altogether and simply fail on string inputs or perform the
-        # encoding and potentially lose information if the strings are not truly ordinal.
-        enc = OrdinalEncoder()
-        # Look for any inputs of type object; numeric values will come in as float64 or int64.
-        # Generate a float value for each unique string in the input dataset.
-        enc.fit(df2[string_cols])
-        # Transform any string columns into their encoded values.
-        df2[string_cols] = enc.transform(df2[string_cols])
-    else:
-        diagnostics["Encoding Operation"] = "No encoding necessary because all columns are numeric."
-    # Merge together the two DataFrames.  They will have the same number of rows and will
-    # remain in the same order.
-
-    return (pd.concat([df, df2], axis=1), diagnostics)
 
 def run_tests(df, max_fraction_anomalies, n_neighbors):
     num_records = df['key'].shape[0]
@@ -86,7 +61,7 @@ def run_tests(df, max_fraction_anomalies, n_neighbors):
     diagnostics = {
         "Number of records": num_records
     }
-    # Remove key and vals, leaving the split-out and encoded versions of values.
+    # Remove key and vals, leaving the split-out versions of values.
     # Bring them back in as an array, as that's what our tests will require.
     col_array = df.drop(["key", "vals"], axis=1).to_numpy()
 
