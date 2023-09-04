@@ -8,7 +8,7 @@ import ast
 
 st.set_page_config(layout="wide")
 
-@st.cache
+@st.cache_data
 def process(server_url, method, num, sensitivity_score, max_fraction_anomalies, debug, input_data_set):
     full_server_url = f"{server_url}/{method}/{num}?sensitivity_score={sensitivity_score}&max_fraction_anomalies={max_fraction_anomalies}&debug={debug}"
     r = requests.post(
@@ -19,7 +19,7 @@ def process(server_url, method, num, sensitivity_score, max_fraction_anomalies, 
     return r
 
 # Used as a helper method for creating lists from JSON.
-@st.cache
+@st.cache_data
 def convert_multivariate_list_to_json(multivariate_str):
     mv_ast = ast.literal_eval(multivariate_str)
     return json.dumps([{"key": k, "vals": v} for idx,[k,v] in enumerate(mv_ast)])
@@ -58,27 +58,27 @@ def main():
     convert_to_json = st.checkbox(label="Convert data in list to JSON format?  If you check this box, enter data as a comma-separated list of values.")
     
     starting_data_set = """[
-        {"key":1,"vals":[22.46, 17.69, 8.04, 14.11]},
-        {"key":2,"vals":[22.56, 17.69, 8.04, 14.11]},
-        {"key":3,"vals":[22.66, 17.69, 8.04, 14.11]},
-        {"key":4,"vals":[22.76, 17.69, 8.04, 14.11]},
-        {"key":5,"vals":[22.896, 17.69, 8.04, 14.11]},
-        {"key":6,"vals":[22.9, 22.69, 8.04, 14.11]},
-        {"key":7,"vals":[22.06, 17.69, 8.04, 14.11]},
-        {"key":8,"vals":[22.16, 17.69, 9.15, 14.11]},
-        {"key":9,"vals":[22.26, 17.69, 8.04, 14.11]},
-        {"key":10,"vals":[22.36, 178.69, 8.04, 14.11]},
-        {"key":11,"vals":[22.46, 17.69, 8.04, 14.11]},
-        {"key":12,"vals":[22.56, 17.69, 8.04, 14.11]},
-        {"key":13,"vals":[22.66, 17.69, 8.04, 14.11]},
-        {"key":14,"vals":[22.76, 17.69, 8.04, 14.11]},
-        {"key":15,"vals":[22.86, 17.69, 8.04, 14.11]},
-        {"key":16,"vals":[22.76, 17.69, 8.04, 14.11]},
-        {"key":17,"vals":[22.66, 17.69, 8.04, 14.11]},
-        {"key":18,"vals":[22.56, 17.69, 8.04, 14.11]},
-        {"key":19,"vals":[22.46, 17.69, 8.04, 14.11]},
-        {"key":20,"vals":[22.36, 17.69, 8.04, 14.11]},
-        {"key":21,"vals":[22.26, 17.69, 8.04, 14.11]}
+        {"key":"1","vals":[22.46, 17.69, 8.04, 14.11]},
+        {"key":"2","vals":[22.56, 17.69, 8.04, 14.11]},
+        {"key":"3","vals":[22.66, 17.69, 8.04, 14.11]},
+        {"key":"4","vals":[22.76, 17.69, 8.04, 14.11]},
+        {"key":"5","vals":[22.896, 17.69, 8.04, 14.11]},
+        {"key":"6","vals":[22.9, 22.69, 8.04, 14.11]},
+        {"key":"7","vals":[22.06, 17.69, 8.04, 14.11]},
+        {"key":"8","vals":[22.16, 17.69, 9.15, 14.11]},
+        {"key":"9","vals":[22.26, 17.69, 8.04, 14.11]},
+        {"key":"10","vals":[22.36, 178.69, 8.04, 14.11]},
+        {"key":"11","vals":[22.46, 17.69, 8.04, 14.11]},
+        {"key":"12","vals":[22.56, 17.69, 8.04, 14.11]},
+        {"key":"13","vals":[22.66, 17.69, 8.04, 14.11]},
+        {"key":"14","vals":[22.76, 17.69, 8.04, 14.11]},
+        {"key":"15","vals":[22.86, 17.69, 8.04, 14.11]},
+        {"key":"16","vals":[22.76, 17.69, 8.04, 14.11]},
+        {"key":"17","vals":[22.66, 17.69, 8.04, 14.11]},
+        {"key":"18","vals":[22.56, 17.69, 8.04, 14.11]},
+        {"key":"19","vals":[22.46, 17.69, 8.04, 14.11]},
+        {"key":"20","vals":[22.36, 17.69, 8.04, 14.11]},
+        {"key":"21","vals":[22.26, 17.69, 8.04, 14.11]}
     ]"""
     input_data = st.text_area(label = "Data to process (in JSON format):", value=starting_data_set, height=300)
 
